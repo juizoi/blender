@@ -3221,12 +3221,11 @@ static void ui_numedit_but_inc(uiBut *but, uiTextEdit &text_edit, const int mod 
   if ((text_edit.edit_string[but->pos] == ' ') || (text_edit.edit_string[but->pos] == '\0') ||
       (!isdigit(text_edit.edit_string[but->pos])))
   {
+    std::string str_edit{text_edit.edit_string};
 
-    for (int i = str_len; i >= but->pos; i--) {
-      text_edit.edit_string[i + 1] = text_edit.edit_string[i];
-    }
+    str_edit.insert(str_edit.begin() + but->pos, '0');
 
-    text_edit.edit_string[but->pos] = '0';
+    ui_textedit_string_set(but, text_edit, str_edit.c_str());
   }
   else {
     int dot_pos = 0;
@@ -4171,7 +4170,7 @@ static int ui_do_but_textedit(
       }
 
       case EVT_PADPLUSKEY:
-        if (event->modifier & KM_CTRL) {
+        if (event->modifier == KM_CTRL) {
           ui_numedit_but_inc(but, text_edit, 1);
           changed = true;
           update = true;
@@ -4179,7 +4178,7 @@ static int ui_do_but_textedit(
         break;
 
       case EVT_PADMINUS:
-        if (event->modifier & KM_CTRL) {
+        if (event->modifier == KM_CTRL) {
           ui_numedit_but_inc(but, text_edit, -1);
           changed = true;
           update = true;
