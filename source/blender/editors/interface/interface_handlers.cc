@@ -3218,13 +3218,11 @@ static void ui_numedit_but_inc(uiBut *but, uiTextEdit &text_edit, const int mod 
 {
   const int str_len = strlen(text_edit.edit_string);
 
-  if ((text_edit.edit_string[but->pos] == ' ') || (text_edit.edit_string[but->pos] == '\0') ||
-      (!isdigit(text_edit.edit_string[but->pos])))
+  std::string str_edit{text_edit.edit_string};
+
+  if (!isdigit(text_edit.edit_string[but->pos]))
   {
-    std::string str_edit{text_edit.edit_string};
-
     str_edit.insert(str_edit.begin() + but->pos, '0');
-
     ui_textedit_string_set(but, text_edit, str_edit.c_str());
   }
   else {
@@ -3253,9 +3251,12 @@ static void ui_numedit_but_inc(uiBut *but, uiTextEdit &text_edit, const int mod 
       }
     }
 
-    double fadd = 10 / pow(10, dot_pos + 1);
+    double fadd = 10;
 
-    std::string str_edit{text_edit.edit_string};
+    for (int i = dot_pos; i >= 0; i--) {
+      fadd /= 10;
+    }
+
     std::string str_num{str_edit.substr(num_str_start, but->pos - num_str_start + 1)};
 
     double prev_result = std::stod(str_num);
@@ -3263,10 +3264,10 @@ static void ui_numedit_but_inc(uiBut *but, uiTextEdit &text_edit, const int mod 
 
     int is_positive = 0;
 
-    if (signf(prev_result) > signf(result)) {
+    if (signum_i(prev_result) > signum_i(result)) {
       is_positive = -1;
     }
-    else if (signf(prev_result) < signf(result)) {
+    else if (signum_i(prev_result) < signum_i(result)) {
       is_positive = 1;
     }
 
