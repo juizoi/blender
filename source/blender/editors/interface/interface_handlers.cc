@@ -4055,6 +4055,12 @@ static int ui_do_but_textedit(
       }
       case WHEELDOWNMOUSE:
       case EVT_DOWNARROWKEY:
+        if (event->modifier == KM_CTRL) {
+          ui_numedit_but_inc(but, text_edit, -1);
+          changed = true;
+          update = true;
+          break;
+        }
         if (data->searchbox) {
 #ifdef USE_KEYNAV_LIMIT
           ui_mouse_motion_keynav_init(&data->searchbox_keynav_state, event);
@@ -4073,6 +4079,12 @@ static int ui_do_but_textedit(
         break;
       case WHEELUPMOUSE:
       case EVT_UPARROWKEY:
+        if (event->modifier == KM_CTRL) {
+          ui_numedit_but_inc(but, text_edit, 1);
+          changed = true;
+          update = true;
+          break;
+        }
         if (data->searchbox) {
 #ifdef USE_KEYNAV_LIMIT
           ui_mouse_motion_keynav_init(&data->searchbox_keynav_state, event);
@@ -4169,22 +4181,6 @@ static int ui_do_but_textedit(
         }
         break;
       }
-
-      case EVT_PADPLUSKEY:
-        if (event->modifier == KM_CTRL) {
-          ui_numedit_but_inc(but, text_edit, 1);
-          changed = true;
-          update = true;
-        }
-        break;
-
-      case EVT_PADMINUS:
-        if (event->modifier == KM_CTRL) {
-          ui_numedit_but_inc(but, text_edit, -1);
-          changed = true;
-          update = true;
-        }
-        break;
     }
 
     if ((event->utf8_buf[0]) && (retval == WM_UI_HANDLER_CONTINUE)
